@@ -12,11 +12,17 @@ import org.openide.util.NbBundle;
 )
 @NbBundle.Messages({
     "StartupOption_DisplayName_StartupFiles=Files",
-    "StartupOption_Keywords_StartupFiles=Files, Startup"
+    "StartupOption_Keywords_StartupFiles=Files, Startup",
+    "StartupFilesOptions.RestartReason=add, remove, or change files loaded at startup"
 })
 public final class StartupFilesOptionsPanelController extends PreferencesPanelController {
 
     public StartupFilesOptionsPanelController() {
         super(new PerformFilePanel());
+    }
+
+    @Override
+    public String getRestartReason() {
+        return Bundle.StartupFilesOptions_RestartReason();
     }
 }

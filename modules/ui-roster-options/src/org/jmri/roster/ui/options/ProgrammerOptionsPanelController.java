@@ -14,11 +14,17 @@ import org.openide.util.NbBundle;
 )
 @NbBundle.Messages({
     "AdvancedOption_DisplayName_Programmer=Programmer",
-    "AdvancedOption_Keywords_Programmer=Programmer, Format"
+    "AdvancedOption_Keywords_Programmer=Programmer, Format",
+    "ProgrammerOptions.RestartReason=changed programmer options"
 })
 public final class ProgrammerOptionsPanelController extends PreferencesPanelController {
 
     public ProgrammerOptionsPanelController() {
         super(new ProgrammerConfigPane());
+    }
+
+    @Override
+    public String getRestartReason() {
+        return Bundle.ProgrammerOptions_RestartReason();
     }
 }

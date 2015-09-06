@@ -2,7 +2,7 @@ package org.jmri.core.ui.options;
 
 import jmri.jmrix.swing.ConnectionsPreferencesPanel;
 import org.netbeans.spi.options.OptionsPanelController;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 
 @OptionsPanelController.TopLevelRegistration(
         categoryName = "#OptionsCategory_Name_Connections",
@@ -10,9 +10,10 @@ import org.openide.util.NbBundle;
         keywords = "#OptionsCategory_Keywords_Connections",
         keywordsCategory = "Connections"
 )
-@NbBundle.Messages({
+@Messages({
     "OptionsCategory_Name_Connections=Connections",
-    "OptionsCategory_Keywords_Connections=Connection, System, Loconet"
+    "OptionsCategory_Keywords_Connections=Connection, System, Loconet",
+    "ConnectionsOptions.RestartReason=add, remove, or edit connections"
 })
 public final class ConnectionsOptionsPanelController extends PreferencesPanelController {
 
@@ -23,5 +24,10 @@ public final class ConnectionsOptionsPanelController extends PreferencesPanelCon
     @Override
     public void applyChanges() {
         this.applyChanges(true);
+    }
+
+    @Override
+    public String getRestartReason() {
+        return Bundle.ConnectionsOptions_RestartReason();
     }
 }

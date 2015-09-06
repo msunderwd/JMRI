@@ -14,11 +14,17 @@ import org.openide.util.NbBundle;
 )
 @NbBundle.Messages({
     "AdvancedOption_DisplayName_General=General",
-    "AdvancedOption_Keywords_General=Roster, Owner"
+    "AdvancedOption_Keywords_General=Roster, Owner",
+    "RosterOptions.RestartReason=change roster file location"
 })
 public final class RosterOptionsPanelController extends PreferencesPanelController {
 
     public RosterOptionsPanelController() {
         super(new RosterConfigPane());
+    }
+
+    @Override
+    public String getRestartReason() {
+        return Bundle.RosterOptions_RestartReason();
     }
 }

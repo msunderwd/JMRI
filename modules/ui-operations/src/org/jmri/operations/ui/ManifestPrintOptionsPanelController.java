@@ -25,4 +25,9 @@ public final class ManifestPrintOptionsPanelController extends PreferencesPanelC
     public ManifestPrintOptionsPanelController() {
         super(new PrintOptionPanel());
     }
+
+    @Override
+    public String getRestartReason() {
+        return null; // Operations preferences do not require restarts
+    }
 }

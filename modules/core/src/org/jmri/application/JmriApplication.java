@@ -39,6 +39,7 @@ import jmri.profile.ProfileManagerDialog;
 import jmri.util.FileUtil;
 import jmri.util.PythonInterp;
 import jmri.util.zeroconf.ZeroConfService;
+import jmri.web.server.WebServer;
 import jmri.web.server.WebServerManager;
 import org.jmri.managers.NetBeansShutDownManager;
 import org.openide.util.Lookup;
@@ -183,7 +184,7 @@ public abstract class JmriApplication extends Bean {
                     // should we log an error, write it to STDOUT, and quit now?
                 }
                 // Always run the WebServer when headless
-                WebServerManager.getWebServer().start();
+                Lookup.getDefault().lookup(WebServer.class).start();
                 System.out.println();
                 System.out.println("JMRI web service is at:");
                 for (InetAddress address : ZeroConfService.hostAddresses()) {
@@ -244,12 +245,6 @@ public abstract class JmriApplication extends Bean {
                 this.setState(State.SHOWING);
             }
             this.doDeferred();
-            this.startManagers();
-            // TODO add user's buttons to toolbar
-            if (!this.loadConfiguration()) {
-                // TODO handle failure to load configuration by displaying a
-                // first time use wizard and the options
-            }
             this.initilizePreferencesUI();
             // do any other GUI things that we might need to do
             if (setState) {

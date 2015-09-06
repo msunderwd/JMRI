@@ -13,10 +13,13 @@ import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.Notification;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract OptionsPanelController that maps the standard OptionsPanelController
@@ -28,13 +31,19 @@ public abstract class PreferencesPanelController extends OptionsPanelController 
 
     @Messages({
         "# {0} - Application name",
-        "restartConfirmation.message=Click here to restart {0} and apply your preferences.",
+        "# {1} - Reason to restart",
+        "restartConfirmation.message=Restart {0} to {1} now?",
         "# {0} - Application name",
-        "restartConfirmation.title=Restart {0}."
+        "restartConfirmation.title=Restart {0}.",
+        "# {0} - Application name",
+        "# {1} - Reason to restart",
+        "restartNotification.message=Click here to restart {0} to {1}.",
     })
 
+    private Notification restartNotification = null;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private final PreferencesPanel preferencesPanel;
+    private final static Logger log = LoggerFactory.getLogger(PreferencesPanelController.class);
 
     public PreferencesPanelController(PreferencesPanel preferencesPanel) {
         if (!preferencesPanel.isPersistant()) {
@@ -45,7 +54,7 @@ public abstract class PreferencesPanelController extends OptionsPanelController 
             if (aPanel != null) {
                 this.preferencesPanel = aPanel;
             } else {
-                manager.setPanel(preferencesPanel);
+                manager.putPanel(preferencesPanel);
                 this.preferencesPanel = preferencesPanel;
             }
         }
@@ -66,6 +75,13 @@ public abstract class PreferencesPanelController extends OptionsPanelController 
     }
 
     /**
+     * Provide a reason to request a restart.
+     * 
+     * @return the reason
+     */
+    public abstract String getRestartReason();
+    
+    /**
      * Called by {@link #applyChanges() } with a boolean value indicating the
      * changes should be saved as if the preferences are handled by the
      * persistent configuration manager or not.
@@ -80,22 +96,17 @@ public abstract class PreferencesPanelController extends OptionsPanelController 
     protected void applyChanges(boolean isPersistent) {
         SwingUtilities.invokeLater(() -> {
             this.preferencesPanel.savePreferences();
-            boolean isRestartRequired = false;
+            boolean isRestartRequired = this.preferencesPanel.isRestartRequired();
+            PersistentPreferencesManager manager = Lookup.getDefault().lookup(PersistentPreferencesManager.class);
             if (isPersistent && this.preferencesPanel.isDirty()) {
                 // this may result in multiple writes to the profile configuration
                 // if a persistant PreferencesPanel sets itself to dirty after
                 // another PreferencesPanel has already written the configuration
-                PersistentPreferencesManager manager = Lookup.getDefault().lookup(PersistentPreferencesManager.class);
-                for (PreferencesPanel panel : manager.getPreferencesPanels().values()) {
-                    if (panel.isRestartRequired()) {
-                        isRestartRequired = true;
-                        break;
-                    }
-                }
-                manager.savePreferences(isRestartRequired);
+                manager.savePreferences();
+                isRestartRequired = manager.isRestartRequired();
             }
-            if (isRestartRequired || this.preferencesPanel.isRestartRequired()) {
-                this.promptToRestart();
+            if (isRestartRequired) {
+                this.promptToRestart(this.getRestartReason());
             }
         });
     }
@@ -116,11 +127,13 @@ public abstract class PreferencesPanelController extends OptionsPanelController 
      */
     @Override
     public boolean isValid() {
+        log.info("{} isValid called.", this.preferencesPanel.getTabbedPreferencesTitle());
         return this.preferencesPanel.isPreferencesValid();
     }
 
     @Override
     public boolean isChanged() {
+        log.info("{} isChanged called.", this.preferencesPanel.getTabbedPreferencesTitle());
         return this.preferencesPanel.isDirty();
     }
 
@@ -147,6 +160,7 @@ public abstract class PreferencesPanelController extends OptionsPanelController 
     }
 
     public void changed() {
+        log.info("{} changed fired.", this.preferencesPanel.getTabbedPreferencesTitle());
         if (this.isChanged()) {
             this.pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
         }
@@ -155,28 +169,33 @@ public abstract class PreferencesPanelController extends OptionsPanelController 
         }
     }
 
-    public void promptToRestart() {
-        if (NotifyDescriptor.YES_OPTION.equals(DialogDisplayer.getDefault().notify(
-                new NotifyDescriptor.Confirmation(
-                        Bundle.restartConfirmation_message(Application.getApplicationName()),
-                        Bundle.restartConfirmation_title(Application.getApplicationName()),
-                        NotifyDescriptor.YES_NO_OPTION)))) {
-            LifecycleManager.getDefault().markForRestart();
-            LifecycleManager.getDefault().exit();
-        } else {
-            this.notifyToRestart();
+    public void promptToRestart(String reason) {
+        if (this.restartNotification == null) {
+            if (NotifyDescriptor.YES_OPTION.equals(DialogDisplayer.getDefault().notify(
+                    new NotifyDescriptor.Confirmation(
+                            Bundle.restartConfirmation_message(Application.getApplicationName(), reason),
+                            Bundle.restartConfirmation_title(Application.getApplicationName()),
+                            NotifyDescriptor.YES_NO_OPTION)))) {
+                LifecycleManager.getDefault().markForRestart();
+                LifecycleManager.getDefault().exit();
+            } else {
+                this.notifyToRestart(reason);
+            }
         }
     }
 
-    public void notifyToRestart() {
-        NotificationDisplayer.getDefault().notify(Bundle.restartConfirmation_title(Application.getApplicationName()),
-                new ImageIcon("org/jmri/core/ui/options/Gnome-view-refresh.png"),
-                Bundle.restartConfirmation_title(Application.getApplicationName()),
-                (ActionEvent e) -> {
-                    LifecycleManager.getDefault().markForRestart();
-                    LifecycleManager.getDefault().exit();
-                },
-                NotificationDisplayer.Priority.HIGH,
-                NotificationDisplayer.Category.INFO);
+    public void notifyToRestart(String reason) {
+        if (this.restartNotification == null) {
+            this.restartNotification = NotificationDisplayer.getDefault().notify(
+                    Bundle.restartConfirmation_title(Application.getApplicationName()),
+                    new ImageIcon("org/jmri/core/ui/options/Gnome-view-refresh.png"),
+                    Bundle.restartNotification_message(Application.getApplicationName(), reason),
+                    (ActionEvent e) -> {
+                        LifecycleManager.getDefault().markForRestart();
+                        LifecycleManager.getDefault().exit();
+                    },
+                    NotificationDisplayer.Priority.HIGH,
+                    NotificationDisplayer.Category.INFO);
+        }
     }
 }

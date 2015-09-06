@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import jmri.Application;
 import jmri.InstanceManager;
 import jmri.UserPreferencesManager;
 import jmri.jmrix.JmrixConfigPane;
@@ -214,28 +212,6 @@ public class AppConfigBase extends JmriPanel {
         final UserPreferencesManager p;
         p = InstanceManager.getDefault(UserPreferencesManager.class);
         p.resetChangeMade();
-        if (restartRequired) {
-            JLabel question = new JLabel(MessageFormat.format(rb.getString("MessageLongQuitWarning"), Application.getApplicationName()));
-            Object[] options = {rb.getString("RestartNow"), rb.getString("RestartLater")};
-            int retVal = JOptionPane.showOptionDialog(this,
-                    question,
-                    MessageFormat.format(rb.getString("MessageShortQuitWarning"), Application.getApplicationName()),
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options,
-                    null);
-            switch (retVal) {
-                case JOptionPane.YES_OPTION:
-                    dispose();
-                    Apps.handleRestart();
-                    break;
-                case JOptionPane.NO_OPTION:
-                    break;
-                default:
-                    break;
-            }
-        }
         // don't restart the program, just close the window
         if (getTopLevelAncestor() != null) {
             ((JFrame) getTopLevelAncestor()).setVisible(false);

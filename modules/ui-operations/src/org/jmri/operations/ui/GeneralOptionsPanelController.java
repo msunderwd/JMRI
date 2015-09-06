@@ -20,4 +20,9 @@ public final class GeneralOptionsPanelController extends PreferencesPanelControl
     public GeneralOptionsPanelController() {
         super(new OperationsSetupPanel());
     }
+
+    @Override
+    public String getRestartReason() {
+        return null; // Operations preferences do not require restarts
+    }
 }
