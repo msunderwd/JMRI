@@ -481,7 +481,8 @@ public class DCCppSimulatorAdapter extends DCCppSimulatorPortController implemen
         if (log.isDebugEnabled()) {
             log.debug("Simulator Thread sent Reply" + r.toString());
         }
-        r = DCCppReply.parseDCCppReply("N0: SERIAL");
+        r = DCCppReply.parseDCCppReply("N1: 192.168.1.42");
+        //r = DCCppReply.parseDCCppReply("N0: SERIAL");
         writeReply(r);
         if (log.isDebugEnabled()) {
             log.debug("Simulator Thread sent Reply" + r.toString());

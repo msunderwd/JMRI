@@ -460,7 +460,7 @@ public class ConfigBaseStationFrame extends JmriJFrame implements DCCppListener 
             outputTable.getCellEditor().stopCellEditing();
         }
         if (value == JOptionPane.YES_OPTION) {
-            saveTableValues();
+            saveTableValues(cTab);
             //OperationsXml.save();
         }
         // TODO: Disabled? Why? Can this go away?
@@ -475,8 +475,9 @@ public class ConfigBaseStationFrame extends JmriJFrame implements DCCppListener 
      * 
      */
     @SuppressFBWarnings(value = "WMI_WRONG_MAP_ITERATOR", justification = "only in slow debug")
-    private void saveTableValues() {
-        if (cTab == CurrentTab.SENSOR) {
+    private void saveTableValues(CurrentTab tab) {
+        switch(tab) {
+        case SENSOR:
             for (int i = 0; i < sensorModel.getRowData().size(); i++) {
 
                 Vector<Object> r = sensorModel.getRowData().elementAt(i);
@@ -509,7 +510,8 @@ public class ConfigBaseStationFrame extends JmriJFrame implements DCCppListener 
                     sensorModel.setDirtyRow(row, false);
                 }
             }
-        } else if (cTab == CurrentTab.TURNOUT) {
+            
+        case TURNOUT:
             for (int i = 0; i < turnoutModel.getRowData().size(); i++) {
 
                 Vector<Object> r = turnoutModel.getRowData().elementAt(i);
@@ -540,7 +542,7 @@ public class ConfigBaseStationFrame extends JmriJFrame implements DCCppListener 
                     turnoutModel.setDirtyRow(row, false);
                 }
             }
-        } else if (cTab == CurrentTab.OUTPUT) {
+        case OUTPUT:
             for (int i = 0; i < outputModel.getRowData().size(); i++) {
 
                 Vector<Object> r = outputModel.getRowData().elementAt(i);
@@ -574,7 +576,9 @@ public class ConfigBaseStationFrame extends JmriJFrame implements DCCppListener 
                     outputModel.setDirtyRow(row, false);
                 }
             }
-        }
+        default:
+            ; // Do nothing.
+        } // End Switch
         
         // Offer to write the changes to EEPROM
         int value = JOptionPane.showConfirmDialog(null, Bundle.getMessage("FieldMCFCloseDialogConfirmMessage"),
@@ -616,7 +620,9 @@ public class ConfigBaseStationFrame extends JmriJFrame implements DCCppListener 
                     Bundle.getMessage("FieldMCFSaveDialogTitle"),
                     JOptionPane.YES_NO_OPTION);
             if (value == JOptionPane.YES_OPTION) {
-                saveTableValues();
+                saveTableValues(CurrentTab.SENSOR);
+                saveTableValues(CurrentTab.TURNOUT);
+                saveTableValues(CurrentTab.OUTPUT);
             }
 
             // Offer to write the changes to EEPROM
