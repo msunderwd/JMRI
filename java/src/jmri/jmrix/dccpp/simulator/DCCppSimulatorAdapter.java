@@ -487,6 +487,16 @@ public class DCCppSimulatorAdapter extends DCCppSimulatorPortController implemen
         if (log.isDebugEnabled()) {
             log.debug("Simulator Thread sent Reply" + r.toString());
         }
+        r = DCCppReply.parseDCCppReply("p0 MAIN");
+        writeReply(r);
+        if (log.isDebugEnabled()) {
+            log.debug("Simulator Thread sent Reply" + r.toString());
+        }
+        r = DCCppReply.parseDCCppReply("p0 PROG");
+        writeReply(r);
+        if (log.isDebugEnabled()) {
+            log.debug("Simulator Thread sent Reply" + r.toString());
+        }
 
         // Generate the other messages too...
     }
@@ -579,6 +589,10 @@ public class DCCppSimulatorAdapter extends DCCppSimulatorPortController implemen
      * enableReceiveTimeout() method), some will return zero bytes or an
      * EOFException at the end of the timeout. In that case, the read should be
      * repeated to get the next real character.
+     * 
+     * @param istream : input stream for reading
+     * @throws java.io.IOException
+     * @return byte : byte read from input stream
      *
      */
     protected byte readByteProtected(DataInputStream istream) throws java.io.IOException {

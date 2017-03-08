@@ -141,7 +141,26 @@ public class DCCppMonPane extends jmri.jmrix.AbstractMonPane implements DCCppLis
                 break;
             case DCCppConstants.POWER_REPLY:
                 text = "Power Status: ";
-                text += ((char) (l.getElement(1) & 0x00FF) == '1' ? "ON" : "OFF");
+                char c = ((char)(l.getElement(1) & 0x00FF));
+                if (l.isNamedPowerReply()) {
+                    text += l.getPowerNameString() + " : ";
+                    text += (c == '2' ? "OVERLOAD" : (c == '1' ? "ON" : "OFF"));
+                } else {
+                    switch (c) {
+                        case '0':
+                            text += "OFF"; break;
+                        case '1':
+                            text += "ON"; break;
+                        case '2':
+                            text += "OVERLOAD (MAIN)"; break;
+                        case '3':
+                            text += "OVERLOAD (PROG)"; break;
+                        default:
+                            // should never happen
+                            text += "UNKNOWN";
+                    }
+                }
+                //text += ((char) (l.getElement(1) & 0x00FF) == '1' ? "ON" : "OFF");
                 break;
             case DCCppConstants.CURRENT_REPLY:
                 text = "Current: " + l.getCurrentString() + " / 1024";

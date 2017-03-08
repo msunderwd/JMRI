@@ -180,7 +180,10 @@ public class DCCppReply extends jmri.jmrix.AbstractMRReply {
                 r._nDataChars = r.toString().length();
                 return(r);
             case DCCppConstants.POWER_REPLY:
-                if (s.matches(DCCppConstants.TRACK_POWER_REPLY_REGEX)) {
+                if (s.matches(DCCppConstants.TRACK_POWER_NAMED_REPLY_REGEX)) {
+                    r.myReply = new StringBuilder(s);
+                    r.myRegex = DCCppConstants.TRACK_POWER_NAMED_REPLY_REGEX;
+                } else if (s.matches(DCCppConstants.TRACK_POWER_REPLY_REGEX)) {
                     r.myReply = new StringBuilder(s);
                     r.myRegex = DCCppConstants.TRACK_POWER_REPLY_REGEX;
                 } else {
@@ -679,6 +682,14 @@ public class DCCppReply extends jmri.jmrix.AbstractMRReply {
 	    return(false);
         }
     }
+    
+    public String getPowerNameString() {
+        if (this.isNamedPowerReply()) {
+            return(this.getValueString(2));
+        } else {
+            return("");
+        }
+    }
 
     public String getTurnoutDefNumString() {
 	if (this.isTurnoutDefReply()) {
@@ -933,6 +944,7 @@ public class DCCppReply extends jmri.jmrix.AbstractMRReply {
     public boolean isProgramReply() { return (this.matches(DCCppConstants.PROGRAM_REPLY_REGEX)); }
     public boolean isProgramBitReply() { return (this.matches(DCCppConstants.PROGRAM_BIT_REPLY_REGEX)); }
     public boolean isPowerReply() { return (this.getOpCodeChar() == DCCppConstants.POWER_REPLY); }
+    public boolean isNamedPowerReply() { return (this.matches(DCCppConstants.TRACK_POWER_NAMED_REPLY_REGEX)); }
     public boolean isCurrentReply() { return (this.getOpCodeChar() == DCCppConstants.CURRENT_REPLY); }
     public boolean isMemoryReply() { return (this.getOpCodeChar() == DCCppConstants.MEMORY_REPLY); }
     public boolean isVersionReply() { return (this.getOpCodeChar() == DCCppConstants.STATUS_REPLY); }
