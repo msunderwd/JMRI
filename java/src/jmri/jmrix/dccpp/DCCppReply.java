@@ -192,7 +192,10 @@ public class DCCppReply extends jmri.jmrix.AbstractMRReply {
                 r._nDataChars = r.toString().length();
                 return(r);
             case DCCppConstants.CURRENT_REPLY:
-                if (s.matches(DCCppConstants.CURRENT_REPLY_REGEX)) {
+                if (s.matches(DCCppConstants.CURRENT_NAMED_REPLY_REGEX)) {
+                    r.myReply = new StringBuilder(s);
+                    r.myRegex = DCCppConstants.CURRENT_NAMED_REPLY_REGEX;
+                } else if (s.matches(DCCppConstants.CURRENT_REPLY_REGEX)) {
                     r.myReply = new StringBuilder(s);
                     r.myRegex = DCCppConstants.CURRENT_REPLY_REGEX;
                 } else {
@@ -946,6 +949,7 @@ public class DCCppReply extends jmri.jmrix.AbstractMRReply {
     public boolean isPowerReply() { return (this.getOpCodeChar() == DCCppConstants.POWER_REPLY); }
     public boolean isNamedPowerReply() { return (this.matches(DCCppConstants.TRACK_POWER_NAMED_REPLY_REGEX)); }
     public boolean isCurrentReply() { return (this.getOpCodeChar() == DCCppConstants.CURRENT_REPLY); }
+    public boolean isNamedCurrentReply() { return (this.matches(DCCppConstants.CURRENT_NAMED_REPLY_REGEX)); }
     public boolean isMemoryReply() { return (this.getOpCodeChar() == DCCppConstants.MEMORY_REPLY); }
     public boolean isVersionReply() { return (this.getOpCodeChar() == DCCppConstants.STATUS_REPLY); }
 //    public boolean isListPacketRegsReply() { return (this.getOpCodeChar() == DCCppConstants.LISTPACKET_REPLY); }
@@ -970,7 +974,9 @@ public class DCCppReply extends jmri.jmrix.AbstractMRReply {
 	    (this.matches(DCCppConstants.LIST_SENSORS_REPLY_REGEX)) ||
 	    (this.matches(DCCppConstants.PROGRAM_REPLY_REGEX)) ||
 	    (this.matches(DCCppConstants.TRACK_POWER_REPLY_REGEX)) ||
+            (this.matches(DCCppConstants.TRACK_POWER_NAMED_REPLY_REGEX)) ||
 	    (this.matches(DCCppConstants.CURRENT_REPLY_REGEX)) ||
+            (this.matches(DCCppConstants.CURRENT_NAMED_REPLY_REGEX)) ||
 	    (this.matches(DCCppConstants.SENSOR_REPLY_REGEX)) ||
 	    (this.matches(DCCppConstants.BROKEN_SENSOR_REPLY_REGEX)) ||
             (this.matches(DCCppConstants.SENSOR_DEF_REPLY_REGEX)) ||

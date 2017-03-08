@@ -161,7 +161,12 @@ public class DCCppMonPane extends jmri.jmrix.AbstractMonPane implements DCCppLis
                 //text += ((char) (l.getElement(1) & 0x00FF) == '1' ? "ON" : "OFF");
                 break;
             case DCCppConstants.CURRENT_REPLY:
-                text = "Current: " + l.getCurrentString() + " / 1024";
+                if (l.isNamedCurrentReply()) {
+                    text = "Current - " + l.getValueString(2);
+                    text += " : " + l.getCurrentString() + " / 1024";
+                } else {
+                    text = "Current: " + l.getCurrentString() + " / 1024";
+                }
                 break;
 //	case DCCppConstants.LISTPACKET_REPLY:
 //	    // TODO: Implement this fully
