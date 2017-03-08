@@ -137,8 +137,8 @@ public final class DCCppConstants {
     public final static String CURRENT_REPLY_REGEX = "\\s*a\\s*(\\d+)";
     public final static String CURRENT_NAMED_REPLY_REGEX = "\\s*a\\s*(\\d+)\\s+(\\w+)\\s*";
     //public final static String TRACK_POWER_REPLY_REGEX = "\\s*p\\s*([0,1])\\s*";
-    public final static String TRACK_POWER_REPLY_REGEX = "\\s*p\\s*([0,1])(\\s+\\w+)?\\s*"; // 08-Mar-17 added match to ptional text string
-    public final static String TRACK_POWER_NAMED_REPLY_REGEX = "\\s*p\\s*([0,1])\\s+(\\w+)\\s*";
+    public final static String TRACK_POWER_REPLY_REGEX = "\\s*p\\s*(\\d+)(\\s+\\w+)?\\s*"; // 08-Mar-17 added match to ptional text string
+    public final static String TRACK_POWER_NAMED_REPLY_REGEX = "\\s*p\\s*(\\d+)\\s+(\\w+)\\s*";
     public final static String SENSOR_REPLY_REGEX = "\\s*[Qq]\\s*(\\d+)\\s*";
     public final static String SENSOR_DEF_REPLY_REGEX = "\\s*Q\\s*(\\d+)\\s+(\\d+)\\s+([0|1])\\s*";
     public final static String SENSOR_ACTIVE_REPLY_REGEX = "\\s*Q\\s*(\\d+)\\s*";
@@ -175,6 +175,9 @@ public final class DCCppConstants {
     public final static String ACCESSORY_OFF       = "0";
     public final static String POWER_ON            = "1";
     public final static String POWER_OFF           = "0";
+    public final static String POWER_OVERLOAD      = "2";
+    public final static String POWER_OVERLOAD_MAIN = "2";
+    public final static String POWER_OVERLOAD_PROG = "3";
     public final static String SENSOR_ON           = "1";
     public final static String SENSOR_OFF          = "0";
     public final static String SENSOR_FALLING_EDGE = "Q";
