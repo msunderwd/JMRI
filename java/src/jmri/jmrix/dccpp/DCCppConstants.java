@@ -154,7 +154,7 @@ public final class DCCppConstants {
     //public final static String STATUS_REPLY_REGEX = "i(DCC\\+\\+\\s?.*):\\s?(?:BUILD)? (.*)"; // V1.0 / V1.1 / V1.2
     public final static String FREE_MEMORY_REPLY_REGEX = "\\s*f\\s*(\\d+)\\s*";
     public final static String WRITE_EEPROM_REPLY_REGEX = "\\s*e\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)\\s*";
-    public final static String COMM_TYPE_REPLY_REGEX = "\\s*N\\s*(\\d+):\\s+((SERIAL)|(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}))\\s*";
+    public final static String COMM_TYPE_REPLY_REGEX = "\\s*N\\s*(\\d+):\\s*((SERIAL)|(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}))\\s*";
 
     // Misc standard values
     public final static char WHITESPACE = ' ';
