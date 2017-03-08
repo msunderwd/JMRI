@@ -644,7 +644,7 @@ public class ConfigBaseStationFrame extends JmriJFrame implements DCCppListener 
         dispose();
     }
 
-    static private Logger log = LoggerFactory.getLogger(ConfigBaseStationFrame.class.getName());
+    private final static Logger log = LoggerFactory.getLogger(ConfigBaseStationFrame.class.getName());
 
     
     /**
