@@ -108,3 +108,8 @@ log4j.category.javax.jmdns=OFF
 
 #log4j.category.jmri.jmrit.display.layoutEditor=DEBUG
 #log4j.category.jmri.jmrit.display.layoutEditor.LayoutBlock=DEBUG
+log4j.category.jmri.jmrix.dccpp=DEBUG
+log4j.category.jmri.jmrix.dccpp.swing.mon=DEBUG
+log4j.category.jmri.jmrix.dccpp.serial=DEBUG
+log4j.category.jmri.jmrix.dccpp.network=DEBUG
+
